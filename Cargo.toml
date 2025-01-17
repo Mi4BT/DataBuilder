@@ -1,0 +1,40 @@
+[package]
+name = "DataBuilder"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["auth"] }
+hyper = "1.0"
+tokio = { version = "1.35", features = ["full"] }
+
+# OpenSearch client
+opensearch = { version = "2.2", features = ["native-tls"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Authentication
+base64 = "0.21"
+sha2 = "0.10"
+hmac = "0.12"
+
+# Time
+chrono = "0.4"
+
+# Logging and error handling
+tracing = "0.1"
+tracing-subscriber = "0.3"
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Configuration
+config = "0.13"
+dotenv = "0.15"
+
+# Async utilities
+futures = "0.3"
+async-trait = "0.1"
