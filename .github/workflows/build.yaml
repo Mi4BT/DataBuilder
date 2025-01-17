@@ -16,6 +16,7 @@ jobs:
       ARM64_DIR: target/linux/arm64
       AMD64_DIR: target/linux/amd64
       EXECUTABLE_NAME: data_builder
+      OPENSSL_DIR: /usr
 
     steps:
       - name: Checkout code
@@ -25,9 +26,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libssl-dev
-
-      - name: Set OpenSSL environment variable
-        run: echo "OPENSSL_DIR=/usr" >> $GITHUB_ENV
 
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
