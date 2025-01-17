@@ -21,6 +21,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libssl-dev
+
+      - name: Set OpenSSL environment variable
+        run: echo "OPENSSL_DIR=/usr" >> $GITHUB_ENV
+
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -29,7 +37,6 @@ jobs:
 
       - name: Install cross for cross-compilation
         run: |
-          sudo apt-get update
           cargo install cross
 
       - name: Build for ARM64 (aarch64-unknown-linux-musl)
