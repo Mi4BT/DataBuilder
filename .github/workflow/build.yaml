@@ -54,7 +54,7 @@ jobs:
 
       - name: List files
         run: |
-          echo "Files in target directory:"
+          echo "List files in target directory:"
           ls -R target/
 
   build-docker-images:
