@@ -22,6 +22,8 @@ use std::sync::Arc;
 #[derive(Debug, Deserialize, Clone)]
 struct Config {
     // HTTP Server auth
+    http_host: String,
+    http_port: String,
     http_username: String,
     http_password: String,
 
@@ -137,6 +139,8 @@ async fn main() -> Result<()> {
     let config = Config {
         http_username: std::env::var("HTTP_USERNAME").expect("HTTP_USERNAME must be set"),
         http_password: std::env::var("HTTP_PASSWORD").expect("HTTP_PASSWORD must be set"),
+        http_host: std::env::var("HTTP_HOSTNAME").expect("HTTP_HOSTNAME must be set"),
+        http_port: std::env::var("HTTP_PORT").expect("HTTP_PORT must be set"),
         opensearch_url: std::env::var("OPENSEARCH_URL").expect("OPENSEARCH_URL must be set"),
         opensearch_username: std::env::var("OPENSEARCH_USERNAME")
             .expect("OPENSEARCH_USERNAME must be set"),
@@ -173,8 +177,9 @@ async fn main() -> Result<()> {
         .with_state(state);
 
     // Start server
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
-    tracing::info!("Server listening on port 3000");
+    let addr = format!("{}:{}", config.http_host, config.http_port);
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
+    tracing::info!("Server listening on {}", addr);
     axum::serve(listener, app).await?;
 
     Ok(())

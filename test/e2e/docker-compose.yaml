@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.10.0
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # Limite mémoire Java
+      - "plugins.security.ssl.http.enabled=true" # Activer SSL
+      - "plugins.security.allow_default_init_securityindex=true" # Initialiser l'index de sécurité
+      - "plugins.security.authcz.admin_dn=CN=admin,OU=Example,O=Example,L=Default,C=US"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200 # Port HTTP d'OpenSearch
+      - 9300:9300 # Port Transport d'OpenSearch
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+      - ./certs:/usr/share/opensearch/config/certs # Certificats SSL/TLS
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.10.0
+    container_name: opensearch-dashboards
+    ports:
+      - 5601:5601 # Port du tableau de bord
+    environment:
+      - OPENSEARCH_HOSTS=https://opensearch:9200
+      - OPENSEARCH_USERNAME=admin
+      - OPENSEARCH_PASSWORD=admin
+    depends_on:
+      - opensearch
+
+volumes:
+  opensearch-data:
