@@ -112,7 +112,7 @@ jobs:
 
       - name: Pull Docker images
         run: |
-          docker pull bedinotom/data_builder:main-dev
+          docker pull bedinotom/data_builder:${{ github.run_number }}
 
       - name: Retag images
         run: |
