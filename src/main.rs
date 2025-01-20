@@ -109,10 +109,12 @@ async fn ingest_logs(
     let pipeline = SimplePipeline;
 
     // Process log through pipeline
-    let processed_log = pipeline
-        .process(log)
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let processed_log = pipeline.process(log).await.map_err(|e| {
+        tracing::error!("Failed to process log through pipeline: {:?}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    tracing::info!("Successfully processed log through pipeline");
 
     // Index log in OpenSearch
     let response = state
@@ -121,11 +123,22 @@ async fn ingest_logs(
         .body(processed_log)
         .send()
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| {
+            tracing::error!("Failed to index log in OpenSearch: {:?}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
 
     if response.status_code().is_success() {
+        tracing::info!(
+            "Successfully indexed log in OpenSearch index '{}'",
+            state.config.index_name
+        );
         Ok(StatusCode::CREATED)
     } else {
+        tracing::error!(
+            "Failed to index log - OpenSearch returned status code: {}",
+            response.status_code()
+        );
         Err(StatusCode::INTERNAL_SERVER_ERROR)
     }
 }

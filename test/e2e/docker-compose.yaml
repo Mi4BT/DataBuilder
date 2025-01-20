@@ -33,5 +33,22 @@ services:
     depends_on:
       - opensearch
 
+  opensearch-collector:
+    image: bedinotom/data_builder:latest
+    container_name: data-collector
+    ports:
+      - 5044:5044
+    environment:
+      - HTTP_USERNAME=admin
+      - HTTP_PASSWORD=admin
+      - HTTP_HOSTNAME=0.0.0.0
+      - HTTP_PORT=5044
+      - OPENSEARCH_URL=http://localhost:9200
+      - OPENSEARCH_USERNAME=test
+      - OPENSEARCH_PASSWORD=Al3q4G4cmDCH99LC
+      - INDEX_NAME=test-index
+    depends_on:
+      - opensearch
+
 volumes:
   opensearch-data:
