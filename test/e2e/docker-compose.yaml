@@ -43,7 +43,7 @@ services:
       - HTTP_PASSWORD=admin
       - HTTP_HOSTNAME=0.0.0.0
       - HTTP_PORT=5044
-      - OPENSEARCH_URL=http://localhost:9200
+      - OPENSEARCH_URL=https://opensearch:9200
       - OPENSEARCH_USERNAME=test
       - OPENSEARCH_PASSWORD=Al3q4G4cmDCH99LC
       - INDEX_NAME=test-index

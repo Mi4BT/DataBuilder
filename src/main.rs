@@ -170,6 +170,7 @@ async fn main() -> Result<()> {
     let conn_pool = SingleNodeConnectionPool::new(Url::parse(&config.opensearch_url)?);
     let transport = TransportBuilder::new(conn_pool)
         .auth(credentials)
+        .cert_validation(CertificateValidation::None)
         .disable_proxy()
         .build()?;
     let client = OpenSearch::new(transport);
