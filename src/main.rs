@@ -9,6 +9,7 @@ use axum::{
 use base64::{engine::general_purpose::STANDARD as BASE64, Engine as _};
 use opensearch::{
     auth::Credentials,
+    cert::CertificateValidation,
     http::{
         transport::{SingleNodeConnectionPool, TransportBuilder},
         Url,
