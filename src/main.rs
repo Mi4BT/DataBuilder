@@ -1,5 +1,6 @@
 mod config;
 mod entry;
+mod logger;
 mod middlewares;
 mod pipelines;
 mod routes;
@@ -7,6 +8,7 @@ mod state;
 
 use anyhow::Result;
 use axum::{middleware, routing::post, Router};
+use tracing_subscriber::prelude::*;
 
 use opensearch::{
     auth::Credentials,
@@ -20,6 +22,7 @@ use opensearch::{
 use std::sync::Arc;
 
 use crate::config::load_config;
+use crate::logger::OpenSearchLayer;
 use crate::middlewares::auth_middleware;
 use crate::routes::ingest_logs;
 use crate::state::AppState;
@@ -44,6 +47,9 @@ async fn main() -> Result<()> {
         .disable_proxy()
         .build()?;
     let client = OpenSearch::new(transport);
+    let opensearch_layer = OpenSearchLayer::new(client.clone());
+
+    tracing_subscriber::registry().with(opensearch_layer).init();
 
     // Create shared state
     let state = Arc::new(AppState {
