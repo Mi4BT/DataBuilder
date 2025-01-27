@@ -29,9 +29,6 @@ use crate::state::AppState;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Initialize tracing
-    tracing_subscriber::fmt::init();
-
     // Load configuration
     let config = load_config();
 
@@ -49,7 +46,14 @@ async fn main() -> Result<()> {
     let client = OpenSearch::new(transport);
     let opensearch_layer = OpenSearchLayer::new(client.clone());
 
-    tracing_subscriber::registry().with(opensearch_layer).init();
+    // Combine the layers
+    let subscriber = tracing_subscriber::registry()
+        .with(tracing_subscriber::fmt::layer()) // Add `fmt` layer for logging
+        .with(opensearch_layer); // Add your custom OpenSearch layer
+
+    // Set the combined subscriber as the global default
+    tracing::subscriber::set_global_default(subscriber)
+        .expect("Failed to set global tracing subscriber");
 
     // Create shared state
     let state = Arc::new(AppState {

@@ -35,6 +35,7 @@ services:
 
   opensearch-collector:
     image: bedinotom/data_builder:latest
+    pull_policy: always
     container_name: data-collector
     ports:
       - 5044:5044
