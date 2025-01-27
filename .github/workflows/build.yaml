@@ -16,10 +16,16 @@ jobs:
       ARM64_DIR: target/linux/arm64
       AMD64_DIR: target/linux/amd64
       EXECUTABLE_NAME: data_builder
+      OPENSSL_DIR: /usr
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libssl-dev
 
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
@@ -29,7 +35,6 @@ jobs:
 
       - name: Install cross for cross-compilation
         run: |
-          sudo apt-get update
           cargo install cross
 
       - name: Build for ARM64 (aarch64-unknown-linux-musl)
@@ -54,7 +59,7 @@ jobs:
 
       - name: List files
         run: |
-          echo "Files in target directory:"
+          echo "List files in target directory:"
           ls -R target/
 
   build-docker-images:
@@ -107,7 +112,7 @@ jobs:
 
       - name: Pull Docker images
         run: |
-          docker pull bedinotom/data_builder:main-dev
+          docker pull bedinotom/data_builder:${{ github.run_number }}
 
       - name: Retag images
         run: |

@@ -1,0 +1,5 @@
+[target.aarch64-unknown-linux-musl]
+image = "bedinotom/aarch64-unknown-linux-musl-ssl:latest"
+
+[target.x86_64-unknown-linux-musl]
+image = "bedinotom/x86_64-unknown-linux-musl-ssl:latest"
